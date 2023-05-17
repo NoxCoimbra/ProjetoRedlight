@@ -1,0 +1,63 @@
+# Ignore general project files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.egg-info/
+dist/
+build/
+*.log
+
+# Ignore Django-specific files and folders
+*.sqlite3
+*.pyc
+*.pyo
+*.pyd
+*.pyz
+*.pyw
+*.bak
+*.swp
+.DS_Store
+.media/
+.env
+
+# Ignore React-specific files and folders
+node_modules/
+npm-debug.log
+yarn-error.log
+build/
+dist/
+
+# Ignore IDE and editor files
+.vscode/
+.idea/
+*.sublime*
+*.swp
+*~
+*.bak
+
+# Ignore compiled files and dependencies
+*.class
+*.war
+*.ear
+*.jar
+*.zip
+*.tar.gz
+*.rar
+
+# Ignore environment-specific files
+.env
+.env.local
+.env.*.local
+
+# Ignore sensitive or personal files
+secrets.json
+credentials.json
+private.key
+
+# Ignore log files
+logs/
+*.log
+
+# Ignore any file or folder starting with a dot
+
