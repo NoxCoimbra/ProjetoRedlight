@@ -1,11 +1,28 @@
 .App {
   text-align: center;
+  background-color: #EE204D;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.page_header{
+  color: white;
+  font-size: 3rem;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 600;
 }
+
+.page_text {
+
+}
+
+.page_mini_text {
+
+}
+
+.page_mini_header {
+  
+}
+
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

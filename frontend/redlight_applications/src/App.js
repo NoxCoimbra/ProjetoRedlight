@@ -1,24 +1,13 @@
-import logo from './logo.svg';
+import { RolesPage,Applicants } from './containers';
 import './App.css';
+import { BrowserRouter, Route,Routes, } from 'react-router-dom';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route className="roles_page" exact path= "/roles" element={<RolesPage/>}/>
+      <Route className="applicants" exact path= "/applicants" element={<Applicants/>}/>
+    </Routes>
   );
 }
 

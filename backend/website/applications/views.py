@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from .models import Applicant
+from .models import Applicant, Role
 
 # Create your views here.
 
@@ -33,15 +33,24 @@ def delete_applicant(request,applicant_id):
     applicant.delete()
     return JsonResponse({'status': 'success', 'message': 'Applicant deleted successfully'})
 
-def edit_applicant(request,applicant_id):
+
+@csrf_exempt
+def edit_applicant(request, applicant_id):
+    print("Oi")
+    
     applicant = get_object_or_404(Applicant, id=applicant_id)
+   
     if request.method == 'POST':
-        applicant.name = request.POST.get('name')
-        applicant.email = request.POST.get('email')
-        applicant.phone = request.POST.get('phone')
-        applicant.age = request.POST.get('age')
-        applicant.cv = request.FILES.get('cv')
-        applicant.role_id = request.POST.get('role_id')
+        print(request.POST)
+        applicant.name = request.POST.get('name', applicant.name)
+        applicant.email = request.POST.get('email', applicant.email)
+        applicant.phone = request.POST.get('phone', applicant.phone)
+        applicant.age = request.POST.get('age', applicant.age)
+        applicant.cv = request.FILES.get('cv', applicant.cv)
+        role_id = request.POST.get('role_id')
+       
+        if role_id:
+            applicant.role_id = role_id
         applicant.save()
         return JsonResponse({'status': 'success', 'message': 'Applicant edited successfully'})
     else:
@@ -72,5 +81,23 @@ def list_applicants(request):
             applicant_list.append(applicant_data)
 
         return JsonResponse(applicant_list, safe=False)
+    else:
+        return JsonResponse({'status': 'error'})
+
+@csrf_exempt
+def list_roles(request):
+    if request.method == 'GET':
+        roles = Role.objects.all()
+        role_list = []
+
+        for role in roles:
+            role_data = {
+                'id': role.id,
+                'title': role.title,
+                'description': role.description
+            }
+            role_list.append(role_data)
+
+        return JsonResponse(role_list, safe=False)
     else:
         return JsonResponse({'status': 'error'})

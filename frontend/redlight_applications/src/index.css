@@ -1,4 +1,5 @@
 body {
+  background-color: #EE204D;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -10,4 +11,23 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.page_header{
+  color: white;
+  font-size: 3rem;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 600;
+}
+
+.page_text {
+
+}
+
+.page_mini_text {
+
+}
+
+.page_mini_header {
+  
 }
