@@ -36,7 +36,7 @@ def delete_applicant(request,applicant_id):
 
 @csrf_exempt
 def edit_applicant(request, applicant_id):
-    print("Oi")
+  
     
     applicant = get_object_or_404(Applicant, id=applicant_id)
    
