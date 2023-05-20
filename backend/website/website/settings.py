@@ -56,7 +56,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 CORS_ALLOWED_ORIGINS = [
-    "*", # add your frontend URL here
+    "*","http://localhost:3000" # add your frontend URL here
 ]
 CORS_ALLOWED_METHODS = ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"]
 

@@ -9,6 +9,9 @@ from .models import Applicant, Role
 #View para adicionar um aplicante
 @csrf_exempt
 def add_applicant(request):
+
+
+
     if request.method == 'POST':
         name = request.POST.get('name')
         email = request.POST.get('email')
@@ -19,7 +22,7 @@ def add_applicant(request):
 
 
       
-        applicant = Applicant(name=name, email=email, phone_number=phone, role_id=role_id)
+        applicant = Applicant(name=name, email=email, phone=phone, role_id=role_id, age=age, cv=cv)
         applicant.save()
 
         return JsonResponse({'status': 'success', 'message': 'Applicant added successfully'})
@@ -27,7 +30,8 @@ def add_applicant(request):
     return JsonResponse({'status': 'error'})
 
 
-#View para dar delete a um aplicante ( dado um id)
+#View para dar delete a um aplicante ( dado um id)~
+@csrf_exempt
 def delete_applicant(request,applicant_id):
     applicant = Applicant.objects.get(id=applicant_id)
     applicant.delete()
@@ -39,7 +43,7 @@ def edit_applicant(request, applicant_id):
   
     
     applicant = get_object_or_404(Applicant, id=applicant_id)
-   
+    
     if request.method == 'POST':
         print(request.POST)
         applicant.name = request.POST.get('name', applicant.name)
@@ -60,6 +64,7 @@ def edit_applicant(request, applicant_id):
 
 
 #View para listar todos os aplicantes
+@csrf_exempt
 def list_applicants(request):
     if request.method == 'GET':
         applicants = Applicant.objects.all()
@@ -101,3 +106,23 @@ def list_roles(request):
         return JsonResponse(role_list, safe=False)
     else:
         return JsonResponse({'status': 'error'})
+    
+
+#View to create a new role
+@csrf_exempt
+def create_role(request):
+    print("oi?")
+    if request.method == 'POST':
+        print("han")
+        title = request.POST.get('name')
+        
+        
+        if title:
+            print("bro")
+            role = Role(title=title)
+            role.save()
+            return JsonResponse({'success': True, 'message': 'Role created successfully'})
+        else:
+            return JsonResponse({'success': False, 'message': 'Title is required'}, status=400)
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)

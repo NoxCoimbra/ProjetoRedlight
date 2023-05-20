@@ -31,3 +31,18 @@ code {
 .page_mini_header {
   
 }
+
+button {
+  flex-grow: 1;
+
+}
+
+.icon {
+  height:24px;
+  width: 24px;
+}
+
+.icon:hover {
+  cursor: pointer;
+
+}

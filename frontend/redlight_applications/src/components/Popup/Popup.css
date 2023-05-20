@@ -1,27 +1,29 @@
 .popup {
 
-    position: fixed;
-    top:0;
-    left:0;
-    width: 100%;
-    height: 100vh;
-    background-color:  ;
-    background-color: rgba(0, 0, 0, 0.5);
-    display:flex;
-    justify-content: center;
-    align-items: center;
-
-}
-
-.popup-inner{
     position: relative;
-    width: 40vw;
-    height: 24vh;
-    border-radius: 8px;
-    padding: 2rem;
+    background-color: white;
+    height: 10vh;
+    width:80%;
     display:flex;
     flex-direction: column;
-    justify-content: flex-start;
-    gap: 2rem;
+    justify-content: center;
+    border-radius: 4px;
+
 }
 
+.applicant_info {
+    display: flex;
+    flex-direction: column;
+    width:90%;
+    align-self: center;
+    gap:0.2rem;
+}
+.applicant_info p {
+    margin: 0;
+}
+
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}

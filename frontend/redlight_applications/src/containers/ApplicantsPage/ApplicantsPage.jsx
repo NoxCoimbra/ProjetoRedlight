@@ -5,13 +5,36 @@ import axios from "axios";
 import {IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import {BsThreeDotsVertical} from "react-icons/bs";
 import { Popup } from "../../components";
+import  {GrAdd} from "react-icons/gr";
+import {RiDeleteBin6Line} from "react-icons/ri";
 
 function ApplicationPage() {
   const [applicants, setApplicants] = useState([]);
   const [roles, setRoles] = useState([]);
   const [showApplicants, setShowApplicants] = useState({});
-  const [dotsPopup, setDotsPopup] = useState(false);
-  
+  const [applicantPopup, setApplicantPopup] = useState(false);
+  const [roleID, setActiveRole] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [searchName, setSearchName] = useState("");
+  const [rolePopup, setRolePopup] = useState(false);
+
+  const searchEvent = (event) => {
+    const value = event.target.value;
+    
+    if (value !== "name") {
+      // Clear the search query when changing the filter option
+      setSearchName("");
+    }
+  };
+
+  const createApplicant = (roleID) => {
+    setActiveRole(roleID);
+    setApplicantPopup(true);
+  };
+  const createRole = () => {
+    
+    setRolePopup(true);
+  };
 
   const toggleApplicants = (roleId) => {
     setShowApplicants((prevShowApplicants) => {
@@ -20,7 +43,9 @@ function ApplicationPage() {
       return updatedShowApplicants;
     });
   };
-  
+  const handleOption = (e) => {
+    setSelectedOption(e.target.value);
+  }
 
     useEffect(() => {
       getApplicants();
@@ -80,15 +105,57 @@ function ApplicationPage() {
         }
     };
 
+    const deleteApplicant = async (applicantId) => {
+      try {
+        await axios.request({
+         url: `http://localhost:8000/applicants/delete/${applicantId}/`, 
+    
+        });
+        getApplicants();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     
     
     return (
       <div className="applicants_page">
-        <div className="side_bar">
-          <h1>Aplicants Page</h1>
-        </div>
+     
         <div className="applicants_info">
-          <div className="search_bar"></div>
+          <div className="filter_bar">
+            <div className="bar_content">
+              <div className="bar_content_filters">
+            <span>Filter by:</span>
+              <select id="selectField" onChange={handleOption}>
+                <option value="role">role</option>
+                <option value="status">status</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="Search by name"
+                  value={searchName}
+                  onChange={(event) => setSearchName(event.target.value)}
+                />
+            </div>
+            <div className="bar_content_icons">
+              <button onClick={() => createRole()}>Create new role</button>
+          
+              <Popup
+                trigger={rolePopup}
+                setTrigger={(value) => {
+                  setRolePopup(value);
+                  if (!value) {
+                    getApplicants();
+                  }
+                }}
+                createType="role"
+              />
+              <button>See applicants list</button>
+            </div>
+          </div>
+
+          </div>
           <div className="board">
             {roles.map((role) => (
               <div
@@ -102,26 +169,41 @@ function ApplicationPage() {
                   <div>
                   {showApplicants[role.id] ? (
                     <IoIosArrowUp
-                      className="arrow"
+                      className="icon"
                       onClick={() => toggleApplicants(role.id)}
                     />
                   ) : (
                     <IoIosArrowDown
-                      className="arrow"
+                      className="icon"
                       onClick={() => toggleApplicants(role.id)}
                     />
                   )}
                   <h2>{role.title}</h2>
                   </div>
                   <div >
-                  <Popup trigger={dotsPopup} setTrigger={setDotsPopup} />
-                  <BsThreeDotsVertical className="dots" onClick={() => setDotsPopup(true)}/>
+                  <GrAdd
+                      className="icon"
+                      onClick={() => createApplicant(role.id)}
+                    />
+                  
                 </div>
+                
                 </div>
+                <Popup
+                  trigger={role.id === roleID ? applicantPopup : false}
+                  setTrigger={(value) => {
+                    setApplicantPopup(value);
+                    if (!value) {
+                      getApplicants();
+                    }
+                  }}
+                  roleId={role.id}
+                  createType="applicant"
+                />
                 {showApplicants[role.id] && (
                   <div className="applicants">
                     {applicants.map((applicant) => {
-                      if (applicant.role.id === role.id) {
+                      if (applicant.role.id === role.id && applicant.name.toLowerCase().includes(searchName.toLowerCase())) {
                         return (
                           <div
                             key={applicant.id}
@@ -129,7 +211,13 @@ function ApplicationPage() {
                             draggable
                             onDragStart={(event) => handleDragStart(event, applicant.id)}
                           >
-                            {applicant.name}
+                            <div className="card_content">
+                            <p>Name: {applicant.name}</p>
+                            
+                            <div className="icons">
+                               <RiDeleteBin6Line onClick={() => deleteApplicant(applicant.id)}/>
+                            </div>
+                            </div>
                           </div>
                         );
                       }
