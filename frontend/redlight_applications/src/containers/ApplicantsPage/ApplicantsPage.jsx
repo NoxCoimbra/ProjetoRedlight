@@ -14,9 +14,11 @@ function ApplicationPage() {
   const [showApplicants, setShowApplicants] = useState({});
   const [applicantPopup, setApplicantPopup] = useState(false);
   const [roleID, setActiveRole] = useState(null);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("role");
   const [searchName, setSearchName] = useState("");
   const [rolePopup, setRolePopup] = useState(false);
+
+  const [stateID, setActiveState] = useState(null);
 
   const searchEvent = (event) => {
     const value = event.target.value;
@@ -36,27 +38,23 @@ function ApplicationPage() {
     setRolePopup(true);
   };
 
-  const toggleApplicants = (roleId) => {
-    setShowApplicants((prevShowApplicants) => {
-      const updatedShowApplicants = { ...prevShowApplicants };
-      updatedShowApplicants[roleId] = !updatedShowApplicants[roleId];
-      return updatedShowApplicants;
-    });
-  };
+
   const handleOption = (e) => {
     setSelectedOption(e.target.value);
+
   }
 
     useEffect(() => {
-      getApplicants();
       getRoles();
+     
+      getApplicants();
     }, []);
   
     const getApplicants = async () => {
       try {
         const response = await axios.get('http://localhost:8000/applicants/list/');
         setApplicants(response.data);
-
+    
         const initialShowApplicants = response.data.reduce((acc, applicant) => {
           const roleId = applicant.role.id;
           if (!acc[roleId]) {
@@ -73,12 +71,17 @@ function ApplicationPage() {
   
     const getRoles = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/applicants/list_roles');
+        const response = await axios.get('http://localhost:8000/applicants/list_roles/');
+        
         setRoles(response.data);
+        
+      
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
+
+    
   
     const handleDragStart = (event, applicantId) => {
       event.dataTransfer.setData('text/plain', applicantId);
@@ -126,22 +129,18 @@ function ApplicationPage() {
           <div className="filter_bar">
             <div className="bar_content">
               <div className="bar_content_filters">
-            <span>Filter by:</span>
-              <select id="selectField" onChange={handleOption}>
-                <option value="role">role</option>
-                <option value="status">status</option>
-                </select>
+            <span>Search:</span>
+              
                 <input
                   type="text"
                   placeholder="Search by name"
                   value={searchName}
                   onChange={(event) => setSearchName(event.target.value)}
+                 
                 />
             </div>
             <div className="bar_content_icons">
-              <button onClick={() => createRole()}>Create new role</button>
-          
-              <Popup
+            <Popup
                 trigger={rolePopup}
                 setTrigger={(value) => {
                   setRolePopup(value);
@@ -151,12 +150,16 @@ function ApplicationPage() {
                 }}
                 createType="role"
               />
+              <button onClick={() => createRole()}>Create new role</button>  
               <button>See applicants list</button>
             </div>
           </div>
 
           </div>
+         
+         {selectedOption === "role" && (
           <div className="board">
+            
             {roles.map((role) => (
               <div
                 key={role.id}
@@ -167,17 +170,6 @@ function ApplicationPage() {
                 
                 <div className="column_title">
                   <div>
-                  {showApplicants[role.id] ? (
-                    <IoIosArrowUp
-                      className="icon"
-                      onClick={() => toggleApplicants(role.id)}
-                    />
-                  ) : (
-                    <IoIosArrowDown
-                      className="icon"
-                      onClick={() => toggleApplicants(role.id)}
-                    />
-                  )}
                   <h2>{role.title}</h2>
                   </div>
                   <div >
@@ -215,6 +207,7 @@ function ApplicationPage() {
                             <p>Name: {applicant.name}</p>
                             
                             <div className="icons">
+                               <span>{applicant.status.status}</span>
                                <RiDeleteBin6Line onClick={() => deleteApplicant(applicant.id)}/>
                             </div>
                             </div>
@@ -228,9 +221,15 @@ function ApplicationPage() {
               </div>
             ))}
           </div>
-        </div>
-      </div>
+         ) }
+       
+         
+          </div>
+          </div>
+    
+                  
     );
+      
   }
   
   

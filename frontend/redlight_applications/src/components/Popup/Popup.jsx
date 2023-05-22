@@ -6,7 +6,6 @@ import axios from "axios";
 function Popup(props) {
     const [name, setName] = useState("");
     const { roleId, createType } = props;
-    console.log(createType)
     
     const saveData = async () => {
       const formData = new FormData();

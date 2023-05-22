@@ -1,2 +1,5 @@
 import Popup from './Popup/Popup';
-export {Popup}
+import ApplicantsList from './ApplicantsList/ApplicantsList';
+
+
+export {Popup,ApplicantsList};

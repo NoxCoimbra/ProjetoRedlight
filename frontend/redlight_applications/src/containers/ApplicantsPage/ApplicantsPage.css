@@ -1,57 +1,63 @@
 .applicants_page {
     
     display:flex;
-    height:100vh;
-}
-
-.side_bar {
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 1rem;
-}
-
-.side_bar h1 {
-    margin-top:0;
+    
+    
+    
 }
 
 .applicants_info {
     display:flex;
     flex-direction: column;
-    
+    position: relative;
+    width:100vw;
+    align-items: center;
+    padding:4rem;
 }
 
 .filter_bar {
-    margin: 2rem 4rem;
+    
     display: flex;
     background-color: lightgray;
     height:8vh;
     justify-content: center;
+    width:100%;
+    padding: 0rem 2rem;
+   
 
 }
 
 .bar_content {
-    width:80%;
+    width:100%;
     display:flex;
     align-items: center;
     justify-content: space-between;
 
 }
 
-.bar_content div {
+.bar_content_filters, .bar_content_icons {
     display:flex;
     align-items: center;
     gap:1rem;
 }
 
 .board {
-    display: flex;
-    gap:10vw;
-    padding: 2rem 4rem;
-    height:100%;
-    overflow-x: scroll;
-   
+    display: grid;
+    justify-items: center;
+    
+    grid-template-columns: repeat(3,1fr);
+    gap: 8vw;
+    row-gap: 10vh;
+    padding: 4rem 0rem;
+    width:100%;
+  
+  
 }
+
+.bar_content_icons button {
+    white-space: nowrap;
+}
+
 
 
 
@@ -64,6 +70,7 @@
     overflow-y: scroll; 
     gap: 0.8rem;
     min-width: 350px;
+    padding-bottom:2rem;
 }
 
 .column_title {
@@ -74,7 +81,7 @@
     justify-content: space-between;
    
 }
-.column_title  {
+.column_title div {
     display:flex;
     align-items: center;
     gap:1rem;
@@ -106,7 +113,15 @@
     justify-content: center;
 }
 .icons {
-    align-self: flex-end;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icons span {
+    background-color:red;
+    border-radius: 8px;
+    padding:0.2rem;
 }
 .card:hover {
     cursor: pointer;

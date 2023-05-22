@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from .models import Applicant, Role
+from .models import Applicant, Role, Status
 
 # Create your views here.
 
@@ -71,12 +71,18 @@ def list_applicants(request):
         applicant_list = []
 
         for applicant in applicants:
+            print(applicant.status.id)
             applicant_data = {
                 'id': applicant.id,
                 'name': applicant.name,
                 'email': applicant.email,
                 'phone': applicant.phone,
                 'age': applicant.age,
+                'status': {
+                    'id':applicant.status.id,
+                    'status': applicant.status.status
+                    
+                },
                 'role': {
                     'id': applicant.role.id,
                     'title': applicant.role.title,
@@ -94,6 +100,7 @@ def list_roles(request):
     if request.method == 'GET':
         roles = Role.objects.all()
         role_list = []
+      
 
         for role in roles:
             role_data = {
@@ -102,11 +109,13 @@ def list_roles(request):
                 'description': role.description
             }
             role_list.append(role_data)
+        
+      
 
         return JsonResponse(role_list, safe=False)
     else:
         return JsonResponse({'status': 'error'})
-    
+
 
 #View to create a new role
 @csrf_exempt

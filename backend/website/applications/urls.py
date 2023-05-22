@@ -9,4 +9,5 @@ urlpatterns = [
     path("edit/<int:applicant_id>/", views.edit_applicant, name="edit_applicant"),
     path("list_roles/", views.list_roles, name="list_roles"),
     path("add_role/", views.create_role, name="add_role"),
+   
 ]   
