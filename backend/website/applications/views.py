@@ -61,8 +61,6 @@ def edit_applicant(request, applicant_id):
         return JsonResponse({'status': 'error'})
 
 
-
-
 #View para listar todos os aplicantes
 @csrf_exempt
 def list_applicants(request):
@@ -71,7 +69,6 @@ def list_applicants(request):
         applicant_list = []
 
         for applicant in applicants:
-            print(applicant.status.id)
             applicant_data = {
                 'id': applicant.id,
                 'name': applicant.name,

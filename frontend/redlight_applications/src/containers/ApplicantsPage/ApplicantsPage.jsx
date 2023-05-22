@@ -4,7 +4,7 @@ import React, { useState,useEffect } from "react";
 import axios from "axios";
 import {IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import {BsThreeDotsVertical} from "react-icons/bs";
-import { Popup } from "../../components";
+import { Popup,ApplicantInfo } from "../../components";
 import  {GrAdd} from "react-icons/gr";
 import {RiDeleteBin6Line} from "react-icons/ri";
 
@@ -17,8 +17,10 @@ function ApplicationPage() {
   const [selectedOption, setSelectedOption] = useState("role");
   const [searchName, setSearchName] = useState("");
   const [rolePopup, setRolePopup] = useState(false);
+  const [infoPopup, setInfoPopup] = useState(false);
+  const [selectedApplicant, setSelectedApplicant] = useState(null);
 
-  const [stateID, setActiveState] = useState(null);
+ 
 
   const searchEvent = (event) => {
     const value = event.target.value;
@@ -38,6 +40,11 @@ function ApplicationPage() {
     setRolePopup(true);
   };
 
+  const openInfoPopup = (applicant) => {
+    setInfoPopup(true);
+    setSelectedApplicant(applicant);
+  }
+ 
 
   const handleOption = (e) => {
     setSelectedOption(e.target.value);
@@ -46,7 +53,6 @@ function ApplicationPage() {
 
     useEffect(() => {
       getRoles();
-     
       getApplicants();
     }, []);
   
@@ -120,12 +126,25 @@ function ApplicationPage() {
       }
     }
 
+    const getCardColor = (status) => {
+      console.log(status)
+      switch (status) {
+        case 'rejected':
+          return 'rejected';
+        case 'approved':
+          return 'approved';
+        case 'under_analysis':
+          return 'under-analysis';
+        default:
+          return '';
+      }
+    };
     
     
     return (
       <div className="applicants_page">
      
-        <div className="applicants_info">
+        <div className="applicants_info" >
           <div className="filter_bar">
             <div className="bar_content">
               <div className="bar_content_filters">
@@ -202,12 +221,13 @@ function ApplicationPage() {
                             className="card"
                             draggable
                             onDragStart={(event) => handleDragStart(event, applicant.id)}
+                            onClick={() => openInfoPopup(applicant)}
                           >
                             <div className="card_content">
                             <p>Name: {applicant.name}</p>
                             
                             <div className="icons">
-                               <span>{applicant.status.status}</span>
+                               <span className={`status ${getCardColor(applicant.status.status)}`}>{applicant.status.status}</span>
                                <RiDeleteBin6Line onClick={() => deleteApplicant(applicant.id)}/>
                             </div>
                             </div>
@@ -222,9 +242,21 @@ function ApplicationPage() {
             ))}
           </div>
          ) }
-       
-         
           </div>
+          <ApplicantInfo
+          trigger={infoPopup}
+          setTrigger={(value) => {
+            setInfoPopup(value);
+            if (!value) {
+              getApplicants();
+            }  
+          }}
+          applicant={selectedApplicant}
+      
+          
+        
+        />
+         
           </div>
     
                   

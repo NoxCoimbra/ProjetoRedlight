@@ -1,26 +1,26 @@
 A fazer:
 
 Tabela aplicante:
-    Deve ser possivel criar um novo
-    Listar
-    Mostrar
-    Apagar
-    Atualizar
+    Deve ser possivel criar um novo   FEITO
+    Listar                            FEITO
+    Mostrar                           FEITO
+    Apagar                            FEITO
+    Atualizar                         
     Uma lista de roles
 
-    Metodo de pesquisa de aplicantes (por role ou por Nome)
+    Metodo de pesquisa de aplicantes (por role ou por Nome) FEITO
 
 Tabela Roles:
 
-    Role:  Pode ser backend
+    Role:  Pode ser backend         FEITO
            Frontend
            Designer
            Full Stack
     Data criada
     Descricao
 
-    Tem de ser possivel apagar/editar/criar novos 
-    Listar todos
+    Tem de ser possivel apagar/editar/criar novos  FEITO 
+    Listar todos                                    FEITO
 
 
 
@@ -38,3 +38,18 @@ Pagina com os aplicantes:  Pode ser do genero das pagina menu do projecto de PEC
 Depois podemos trocar na navbar para os roles:
 Varias tabelas uma por role com as varias pessoas.
 Tambem deve ser possivel escolher a pessoa    ( Se possivel implementar uma feature para puxar uma pessoa para cima ( movimentar as caixas)
+
+
+
+
+A fazer:  
+
+Pagina com a lista dos aplicantes  (  igual ao menu de PECD)
+Letras e tamanhos etc
+Edicao de aplicantes
+Delete de roles
+
+Um aplicante poder estar em varias roles e com status diferentes para cada role 
+
+
+Extras 
