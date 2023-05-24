@@ -2,6 +2,7 @@ from typing import Any, Type
 from django.db import models
 from django.db.models.manager import BaseManager
 
+    
 
 
 class Role(models.Model):
@@ -12,10 +13,16 @@ class Role(models.Model):
     )
     title = models.CharField(max_length=50, choices=ROLE_CHOICES)
     description = models.TextField(null=True, blank=True)
-     
+    is_deleted = models.BooleanField(default=False)
+
     def __str__(self):
         return self.title
+class RoleQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(is_deleted=False)
+
     
+        
 class Status(models.Model):
     STATUS_CHOICES = (
         ('approved', 'Approved'),
@@ -23,9 +30,10 @@ class Status(models.Model):
         ('under_analysis', 'Under Analysis'),
     )
     status = models.CharField(max_length=50, choices=STATUS_CHOICES,default='under_analysis',null=True,blank=True)
-
+   
     def __str__(self):
         return self.status
+
 
 class Applicant(models.Model):
     name=models.CharField(max_length=100)
@@ -35,9 +43,11 @@ class Applicant(models.Model):
     cv = models.FileField(upload_to='cv/',null=True,blank=True)
     role=models.ForeignKey(Role,on_delete=models.CASCADE)
     status= models.ForeignKey(Status,on_delete=models.CASCADE,null=True,blank=True,default=1)
-
+    is_deleted = models.BooleanField(default=False)
     def __str__(self):
         return self.name
-    
 
-    
+
+class ApplicantQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(is_deleted=False)    

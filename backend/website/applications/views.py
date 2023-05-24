@@ -34,7 +34,8 @@ def add_applicant(request):
 @csrf_exempt
 def delete_applicant(request,applicant_id):
     applicant = Applicant.objects.get(id=applicant_id)
-    applicant.delete()
+    applicant.is_deleted=True
+    applicant.save()
     return JsonResponse({'status': 'success', 'message': 'Applicant deleted successfully'})
 
 
@@ -144,8 +145,8 @@ def create_role(request):
 #view to delete a role
 @csrf_exempt
 def delete_role(request,role_id):
-    print("oi?")
+    
     if request.method == 'DELETE':
         role = Role.objects.get(id=role_id)
-        role.delete()
+        role.is_deleted=True
         return JsonResponse({'status': 'success', 'message': 'Role deleted successfully'})
