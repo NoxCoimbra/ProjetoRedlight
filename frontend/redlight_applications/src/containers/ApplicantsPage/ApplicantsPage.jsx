@@ -102,7 +102,7 @@ function ApplicationPage() {
     const moveApplicant = async (applicantId, roleId) => {
       try {
         const formData = new FormData();
-        formData.append('role_id', roleId);
+        formData.append('role', roleId);
         await axios.post(`http://localhost:8000/applicants/edit/${applicantId}/`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
@@ -126,8 +126,18 @@ function ApplicationPage() {
       }
     }
 
+    const deleteRole = async (roleId) => {
+      try {
+        console.log("oi")
+        await axios.delete(`http://localhost:8000/applicants/delete_role/${roleId}/`);
+        getRoles();
+        getApplicants();
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     const getCardColor = (status) => {
-      console.log(status)
       switch (status) {
         case 'rejected':
           return 'rejected';
@@ -148,9 +158,10 @@ function ApplicationPage() {
           <div className="filter_bar">
             <div className="bar_content">
               <div className="bar_content_filters">
-            <span>Search:</span>
+            <span className="small_header">Search:</span>
               
                 <input
+                  className="small_header"
                   type="text"
                   placeholder="Search by name"
                   value={searchName}
@@ -169,8 +180,8 @@ function ApplicationPage() {
                 }}
                 createType="role"
               />
-              <button onClick={() => createRole()}>Create new role</button>  
-              <button>See applicants list</button>
+              <button className="small_header" onClick={() => createRole()}>Create new role</button>  
+              <button className="small_header">See applicants list</button>
             </div>
           </div>
 
@@ -189,13 +200,14 @@ function ApplicationPage() {
                 
                 <div className="column_title">
                   <div>
-                  <h2>{role.title}</h2>
+                  <h2 className="header">{role.title}</h2>
                   </div>
                   <div >
                   <GrAdd
                       className="icon"
                       onClick={() => createApplicant(role.id)}
                     />
+                  <RiDeleteBin6Line className="icon"onClick={() => deleteRole(role.id)}/>
                   
                 </div>
                 
@@ -224,11 +236,11 @@ function ApplicationPage() {
                             onClick={() => openInfoPopup(applicant)}
                           >
                             <div className="card_content">
-                            <p>Name: {applicant.name}</p>
+                            <p className="text">Name: {applicant.name}</p>
                             
                             <div className="icons">
-                               <span className={`status ${getCardColor(applicant.status.status)}`}>{applicant.status.status}</span>
-                               <RiDeleteBin6Line onClick={() => deleteApplicant(applicant.id)}/>
+                               <span className={`status text ${getCardColor(applicant.status.status)}`}>{applicant.status.status}</span>
+                               <RiDeleteBin6Line className="icon" onClick={() => deleteApplicant(applicant.id)}/>
                             </div>
                             </div>
                           </div>
@@ -252,9 +264,7 @@ function ApplicationPage() {
             }  
           }}
           applicant={selectedApplicant}
-      
-          
-        
+          roles={roles}     
         />
          
           </div>

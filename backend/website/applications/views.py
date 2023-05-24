@@ -40,26 +40,34 @@ def delete_applicant(request,applicant_id):
 
 @csrf_exempt
 def edit_applicant(request, applicant_id):
-  
     
+   
     applicant = get_object_or_404(Applicant, id=applicant_id)
     
     if request.method == 'POST':
-        print(request.POST)
+        
         applicant.name = request.POST.get('name', applicant.name)
         applicant.email = request.POST.get('email', applicant.email)
         applicant.phone = request.POST.get('phone', applicant.phone)
         applicant.age = request.POST.get('age', applicant.age)
-        applicant.cv = request.FILES.get('cv', applicant.cv)
-        role_id = request.POST.get('role_id')
-       
+        status_id = request.POST.get('status')
+        role_id = request.POST.get('role')
+    
         if role_id:
-            applicant.role_id = role_id
+            role = get_object_or_404(Role, id=role_id)
+            applicant.role = role
+        
+        if status_id:
+        
+            status = get_object_or_404(Status, id=status_id)
+           
+            applicant.status = status
+         
+        
         applicant.save()
         return JsonResponse({'status': 'success', 'message': 'Applicant edited successfully'})
     else:
         return JsonResponse({'status': 'error'})
-
 
 #View para listar todos os aplicantes
 @csrf_exempt
@@ -132,3 +140,12 @@ def create_role(request):
             return JsonResponse({'success': False, 'message': 'Title is required'}, status=400)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
+
+#view to delete a role
+@csrf_exempt
+def delete_role(request,role_id):
+    print("oi?")
+    if request.method == 'DELETE':
+        role = Role.objects.get(id=role_id)
+        role.delete()
+        return JsonResponse({'status': 'success', 'message': 'Role deleted successfully'})

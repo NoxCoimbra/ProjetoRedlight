@@ -11,7 +11,8 @@ function Popup(props) {
       const formData = new FormData();
       formData.append('name', name);
       formData.append('role_id', roleId);
-      
+      console.log(formData)
+      console.log(roleId)
       try {
         if (createType === 'applicant') {
           await axios.post(`http://localhost:8000/applicants/add/`, formData, {
@@ -33,7 +34,7 @@ function Popup(props) {
     return props.trigger ? (
       <div className="popup">
         <div className='applicant_info'>
-          <p>{createType === 'applicant' ? 'Applicant Name' : 'Role Title'}</p>
+          <p className="text">{createType === 'applicant' ? 'Applicant Name' : 'Role Title'}</p>
           <input
             type="text"
             placeholder={createType === 'applicant' ? 'Applicant name' : 'Role title'}

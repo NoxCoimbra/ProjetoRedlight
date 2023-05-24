@@ -34,7 +34,7 @@ class Applicant(models.Model):
     age=models.IntegerField(null=True,blank=True)
     cv = models.FileField(upload_to='cv/',null=True,blank=True)
     role=models.ForeignKey(Role,on_delete=models.CASCADE)
-    status= models.ForeignKey(Status,on_delete=models.CASCADE,null=True,blank=True)
+    status= models.ForeignKey(Status,on_delete=models.CASCADE,null=True,blank=True,default=1)
 
     def __str__(self):
         return self.name

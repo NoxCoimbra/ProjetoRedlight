@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
 body {
   background-color: #EE204D;
   margin: 0;
@@ -13,23 +15,24 @@ code {
     monospace;
 }
 
-.page_header{
-  color: white;
-  font-size: 3rem;
-  font-family: 'Times New Roman', Times, serif;
-  font-weight: 600;
-}
-
-.page_text {
-
-}
-
-.page_mini_text {
-
-}
-
-.page_mini_header {
+.header{
   
+  font-size: 2.4rem;
+  font-family: 'Inter', sans-serif;
+  font-weight:600;
+}
+
+.small_header {
+  font-size: 1.8rem;
+  font-family: 'Inter', sans-serif;
+  font-weight:500;
+}
+.text {
+  font-size: 1.1rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  margin:0.5em;
+
 }
 
 button {
@@ -38,11 +41,17 @@ button {
 }
 
 .icon {
-  height:24px;
-  width: 24px;
+  height:30px;
+  width: 30px;
 }
 
 .icon:hover {
   cursor: pointer;
-
 }
+
+input,select {
+  border: 1px solid #bfbfc3;
+  border-radius: 4px;
+  padding: 0.2rem;
+}
+
