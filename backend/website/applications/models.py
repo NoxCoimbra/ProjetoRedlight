@@ -44,13 +44,14 @@ class ApplicantQuerySet(models.QuerySet):
         return self.filter(is_deleted=False)
     
 class Applicant(models.Model):
+    avatar = models.CharField(max_length=100, null=True, blank=True)
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100, null=True, blank=True, unique=True)
     phone = models.CharField(max_length=100, null=True, blank=True, unique=True)
     age = models.IntegerField(null=True, blank=True)
     cv = models.FileField(upload_to='cv/', null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    status = models.ForeignKey(Status, on_delete=models.CASCADE, null=True, blank=True, default=1)
+    status = models.ForeignKey(Status, on_delete=models.CASCADE,default=1)
     is_deleted = models.BooleanField(default=False)
 
     objects = models.Manager()  # Default manager

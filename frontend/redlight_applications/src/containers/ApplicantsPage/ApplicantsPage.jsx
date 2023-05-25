@@ -4,7 +4,7 @@ import React, { useState,useEffect } from "react";
 import axios from "axios";
 import {IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import {BsThreeDotsVertical} from "react-icons/bs";
-import { Popup,ApplicantInfo } from "../../components";
+import { Popup,ApplicantInfo,ApplicantsList } from "../../components";
 import  {GrAdd} from "react-icons/gr";
 import {RiDeleteBin6Line} from "react-icons/ri";
 
@@ -14,12 +14,12 @@ function ApplicationPage() {
   const [showApplicants, setShowApplicants] = useState({});
   const [applicantPopup, setApplicantPopup] = useState(false);
   const [roleID, setActiveRole] = useState(null);
-  const [selectedOption, setSelectedOption] = useState("role");
+  const [selectedOption, setSelectedOption] = useState(true);
   const [searchName, setSearchName] = useState("");
   const [rolePopup, setRolePopup] = useState(false);
   const [infoPopup, setInfoPopup] = useState(false);
   const [selectedApplicant, setSelectedApplicant] = useState(null);
-
+  const [listPage, setListPage] = useState(1);
  
 
   const searchEvent = (event) => {
@@ -36,7 +36,6 @@ function ApplicationPage() {
     setApplicantPopup(true);
   };
   const createRole = () => {
-    
     setRolePopup(true);
   };
 
@@ -46,9 +45,9 @@ function ApplicationPage() {
   }
  
 
-  const handleOption = (e) => {
-    setSelectedOption(e.target.value);
-
+  const changePage = () => {
+    setSelectedOption(!selectedOption);
+    
   }
 
     useEffect(() => {
@@ -137,7 +136,7 @@ function ApplicationPage() {
       }
     };
 
-    const getCardColor = (status) => {
+    const getStatusColor = (status) => {
       switch (status) {
         case 'rejected':
           return 'rejected';
@@ -175,19 +174,23 @@ function ApplicationPage() {
                 setTrigger={(value) => {
                   setRolePopup(value);
                   if (!value) {
-                    getApplicants();
+                    getRoles();
                   }
                 }}
                 createType="role"
               />
-              <button className="small_header" onClick={() => createRole()}>Create new role</button>  
-              <button className="small_header">See applicants list</button>
+              <button className="small_header" onClick={() => createRole()}>Create new role</button>
+              {selectedOption === true ? (
+              <button className="small_header"onClick= {changePage}>list</button>
+              ) : (
+                <button className="small_header"onClick= {changePage}>board</button>
+              )}
             </div>
           </div>
 
           </div>
          
-         {selectedOption === "role" && (
+         {selectedOption === true ? (
           <div className="board">
             
             {roles.map((role) => (
@@ -239,7 +242,7 @@ function ApplicationPage() {
                             <p className="text">Name: {applicant.name}</p>
                             
                             <div className="icons">
-                               <span className={`status text ${getCardColor(applicant.status.status)}`}>{applicant.status.status}</span>
+                               <span className={`status text ${getStatusColor(applicant.status.status)}`}>{applicant.status.status}</span>
                                <RiDeleteBin6Line className="icon" onClick={() => deleteApplicant(applicant.id)}/>
                             </div>
                             </div>
@@ -253,7 +256,15 @@ function ApplicationPage() {
               </div>
             ))}
           </div>
-         ) }
+         ) : (
+          <ApplicantsList
+            applicants= {applicants}
+            searchName={searchName}
+            openInfoPopup={openInfoPopup}
+            deleteApplicant={deleteApplicant}
+            getStatusColor={getStatusColor}
+          />) 
+          }
           </div>
           <ApplicantInfo
           trigger={infoPopup}

@@ -1,7 +1,7 @@
 .info_popup {
     position:relative;
     z-index:1;
-    height:100vh;
+    min-height: 100vh;
     background: #dcdcde;
     box-shadow: -4px 0 8px #bfbfc3;
     width: 20%;
@@ -33,6 +33,7 @@
 .personal_info div {
     border-bottom: 1px solid #bfbfc3;
     padding: 1rem 0rem;
+    display: flex;
 }
 
 .personal_info select {
@@ -61,4 +62,19 @@ background-color: yellow;
     white-space: nowrap;
     border-radius: 8px;
     padding:4px;
+}
+
+.error {
+    color: #EE204D;
+    text-align: center;
+    padding:  0 2rem;
+}
+
+.avatar {
+    height:4rem;
+    border-radius: 50%;
+    width:4rem;
+    border: 1px solid black;
+    margin-left:1rem;
+    
 }

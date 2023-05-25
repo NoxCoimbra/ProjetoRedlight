@@ -7,9 +7,10 @@ import {GrClose} from "react-icons/gr";
 
 function ApplicantInfo(props) {
     const { applicant,roles } = props;
-    
+    const [errorMessage, setErrorMessage] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [updatedApplicant, setUpdatedApplicant] = useState(applicant);
+    const [avatar,setAvatar] = useState(null);
     
     useEffect(() => {
         setUpdatedApplicant(applicant);
@@ -34,7 +35,15 @@ function ApplicantInfo(props) {
             [name]: value,
             }));
         }
+       
     };
+
+    const avatarChange = (event) => {
+        
+        const file = event.target.files[0];
+        setAvatar(file);
+       
+      };
 
     const getCardColor = (status) => {
         switch (status) {
@@ -53,11 +62,12 @@ function ApplicantInfo(props) {
 
 
     const editSave = async () => {
+        console.log(updatedApplicant)
         try {
             const formData = new FormData();
 
             if (typeof updatedApplicant.role === 'object') {
-                formData.append('role',updatedApplicant.role.id)
+                formData.append('role',updatedApplicant.role.id )
             } else {
                 formData.append('role',updatedApplicant.role)
             }
@@ -66,17 +76,37 @@ function ApplicantInfo(props) {
             } else {
                 formData.append('status',updatedApplicant.status)
             }
-
-            formData.append('name', updatedApplicant.name);
+            if (updatedApplicant.name) {
+                formData.append('name', updatedApplicant.name);
+            }
+        
+            if (updatedApplicant.email) {
             formData.append('email', updatedApplicant.email);
+            }
+        
+            if (updatedApplicant.phone) {
             formData.append('phone', updatedApplicant.phone);
-            formData.append('age', updatedApplicant.age);    
+            }
+        
+            if (updatedApplicant.age) {
+            formData.append('age', updatedApplicant.age);
+            }
+            if (avatar) {
+                console.log(avatar)
+                formData.append('avatar', avatar);
+              }
 
+        
             const response = await axios.post( `http://localhost:8000/applicants/edit/${applicant.id}/`, formData);
             
-            console.log(response.data);
-            setIsEditing(!isEditing);
-            props.setTrigger(false);
+    
+           
+            if (response.data.status === 'success') {
+                setIsEditing(!isEditing);
+                props.setTrigger(false);
+            } else {
+                setErrorMessage(response.data.message);
+            }
         } catch (error) {
             console.error("Error updating applicant:", error);
         }
@@ -95,9 +125,9 @@ function ApplicantInfo(props) {
                     <div>
                     <p className="text">Applicant details:</p>
                     {!isEditing ? (
-                    <p className="text edit" onClick={() => setIsEditing(!isEditing)}>Edit</p>
+                    <p className="text edit" onClick={() => {setIsEditing(!isEditing); setErrorMessage(null);}}>Edit</p>
                     ) : (
-                        <p className="text edit" onClick={() => editSave()}>Save</p>
+                        <p className="text edit" onClick={() => {editSave(); setErrorMessage(null)}}>Save</p>
                     )}
                     </div>
                     <div>
@@ -115,6 +145,23 @@ function ApplicantInfo(props) {
                         <p className='text'>{applicant.name}</p>
                     )}{" "}
 
+                    </div>
+                    <div>
+                    <p className="text">Avatar: </p>
+                    {isEditing ? (
+                   
+                        <input
+                        type="file"
+                        name="avatar"
+                        accept="image/*"
+                        onChange={avatarChange}
+                        />
+                    ) : (
+                         
+                    <img src={applicant.avatar} alt="Avatar" className="avatar" />
+                    
+                   
+                    )}
                     </div>
                     <div>
                     <p className="text">Age: </p>
@@ -202,8 +249,11 @@ function ApplicantInfo(props) {
                    <p className={`status text ${getCardColor(applicant.status.status)}`}>{applicant.status.status}</p> 
                 )}{" "}
                 </div>
+                {errorMessage && (<p className="text error">{errorMessage}</p>)}
                 <div className="close">
-                    <GrClose className="icon" onClick={() => props.setTrigger(false)}/>
+                    <GrClose className="icon" onClick={()=> { props.setTrigger(false); 
+                                                        setIsEditing(false);
+                                                        setErrorMessage(null); }}/>
                 </div>
 
         </div>

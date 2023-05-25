@@ -1,0 +1,49 @@
+.applicants_list {
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    align-items: center;
+    gap: 1rem;
+    margin-top:4rem;
+    overflow-y: scroll;
+}
+
+.applicant_box {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    background-color: white;
+    border-radius: 4px;
+    height: 10vh;
+    padding: 0rem 1rem;
+
+}
+.applicant {
+    display:flex;
+    gap:1.2rem;
+    align-items: center;
+}
+
+.role_status {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    gap:0.2rem;
+}
+.div_items {
+    display: flex;
+    gap:0.8rem;
+    align-items: center;
+}
+
+.extra {
+    text-decoration: underline;
+}
+
+.status {
+    border-radius: 8px;
+    padding: 4px;
+    text-align: center;
+}

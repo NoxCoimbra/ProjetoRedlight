@@ -2,7 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from .models import Applicant, Role, Status
-
+from django.core.exceptions import ObjectDoesNotExist
+import requests
+import json
 # Create your views here.
 
 
@@ -19,8 +21,6 @@ def add_applicant(request):
         age = request.POST.get('age')
         cv = request.FILES.get('cv')
         role_id = request.POST.get('role_id')
-
-
       
         applicant = Applicant(name=name, email=email, phone=phone, role_id=role_id, age=age, cv=cv)
         applicant.save()
@@ -41,19 +41,38 @@ def delete_applicant(request,applicant_id):
 
 @csrf_exempt
 def edit_applicant(request, applicant_id):
-    
+    client_id = "f508a33572dd6df"
     
     applicant = get_object_or_404(Applicant, id=applicant_id)
-    
+  
     if request.method == 'POST':
-        
+        image_file = request.FILES.get('avatar')
+        print(image_file)
         applicant.name = request.POST.get('name', applicant.name)
         applicant.email = request.POST.get('email', applicant.email)
         applicant.phone = request.POST.get('phone', applicant.phone)
         applicant.age = request.POST.get('age', applicant.age)
         status_id = request.POST.get('status')
         role_id = request.POST.get('role')
-    
+
+        print("oi")
+
+        if image_file:
+            url = "https://api.imgur.com/3/image"
+            headers = {"Authorization": f"Client-ID {client_id}"}
+            files = {"image": image_file}
+            try:
+                    # Send the image file to Imgur API
+                    response = requests.post(url, headers=headers, files=files)
+                    data = json.loads(response.text)
+                    image_url = data["data"]["link"]
+                    
+                    # Save the image URL to the applicant
+                    applicant.avatar = image_url
+            except requests.exceptions.RequestException as e:
+                # Handle any API request errors
+                return JsonResponse({'status': 'error', 'message': str(e)})
+
         if role_id:
             role = get_object_or_404(Role, id=role_id)
             applicant.role = role
@@ -63,10 +82,23 @@ def edit_applicant(request, applicant_id):
             status = get_object_or_404(Status, id=status_id)
            
             applicant.status = status
-         
+
+        if applicant.email:
+            try:
+                existing_applicant = Applicant.objects.exclude(id=applicant.id).get(email=applicant.email)
+                return JsonResponse({'status': 'error', 'message': 'Email already exists in the database'})
+            except ObjectDoesNotExist:
+                pass
+
+        if applicant.phone:
+            try:
+                existing_applicant = Applicant.objects.exclude(id=applicant.id).get(phone=applicant.phone)
+                return JsonResponse({'status': 'error', 'message': 'Phone already exists in the database'})
+            except ObjectDoesNotExist:
+                pass
         
         applicant.save()
-        return JsonResponse({'status': 'success', 'message': 'Applicant edited successfully'})
+        return JsonResponse({'status': 'success'})
     else:
         return JsonResponse({'status': 'error'})
 
@@ -75,16 +107,18 @@ def edit_applicant(request, applicant_id):
 def list_applicants(request):
     if request.method == 'GET':
         applicants = Applicant.active_objects.active()
-        print(applicants)
+        
         applicant_list = []
-
+                  
         for applicant in applicants:
+            print(applicant.status)
             applicant_data = {
                 'id': applicant.id,
                 'name': applicant.name,
                 'email': applicant.email,
                 'phone': applicant.phone,
                 'age': applicant.age,
+                'avatar': applicant.avatar,
                 'status': {
                     'id':applicant.status.id,
                     'status': applicant.status.status
@@ -127,7 +161,7 @@ def list_roles(request):
 #View to create a new role
 @csrf_exempt
 def create_role(request):
-    print("oi?")
+    
     if request.method == 'POST':
        
         title = request.POST.get('name')
