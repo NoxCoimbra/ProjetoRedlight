@@ -42,7 +42,7 @@ def delete_applicant(request,applicant_id):
 @csrf_exempt
 def edit_applicant(request, applicant_id):
     
-   
+    
     applicant = get_object_or_404(Applicant, id=applicant_id)
     
     if request.method == 'POST':
@@ -74,7 +74,8 @@ def edit_applicant(request, applicant_id):
 @csrf_exempt
 def list_applicants(request):
     if request.method == 'GET':
-        applicants = Applicant.objects.all()
+        applicants = Applicant.active_objects.active()
+        print(applicants)
         applicant_list = []
 
         for applicant in applicants:
@@ -104,7 +105,7 @@ def list_applicants(request):
 @csrf_exempt
 def list_roles(request):
     if request.method == 'GET':
-        roles = Role.objects.all()
+        roles = Role.active_objects.active()
         role_list = []
       
 
@@ -128,12 +129,12 @@ def list_roles(request):
 def create_role(request):
     print("oi?")
     if request.method == 'POST':
-        print("han")
+       
         title = request.POST.get('name')
         
         
         if title:
-            print("bro")
+        
             role = Role(title=title)
             role.save()
             return JsonResponse({'success': True, 'message': 'Role created successfully'})
@@ -145,8 +146,8 @@ def create_role(request):
 #view to delete a role
 @csrf_exempt
 def delete_role(request,role_id):
-    
     if request.method == 'DELETE':
         role = Role.objects.get(id=role_id)
         role.is_deleted=True
+        role.save()
         return JsonResponse({'status': 'success', 'message': 'Role deleted successfully'})
