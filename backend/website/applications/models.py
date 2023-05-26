@@ -3,18 +3,19 @@ from django.db import models
 from django.db.models.manager import BaseManager
 
     
+#A base de dados tem 3 modelos: Applicant, Role e Status
+#Cada aplicante pode ter uma role e um status
+#As roles e os aplicantes são entidades soft deletable, controladas pelo campo is_deleted. 
+# Para alem disso as classes RoleQuerySet e ApplicantQuerySet permitem filtrar os objetos que não estão apagados
+
 
 class RoleQuerySet(models.QuerySet):
     def active(self):
         return self.filter(is_deleted=False)
 
 class Role(models.Model):
-    ROLE_CHOICES = (
-        ('backend', 'Backend'),
-        ('frontend', 'Frontend'),
-        ('designer', 'Designer'),
-    )
-    title = models.CharField(max_length=50, choices=ROLE_CHOICES)
+    
+    title = models.CharField(max_length=50 )
     description = models.TextField(null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
     objects = models.Manager()
@@ -32,10 +33,10 @@ class Status(models.Model):
         ('rejected', 'Rejected'),
         ('under_analysis', 'Under Analysis'),
     )
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='under_analysis', null=True, blank=True)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default=1, null=True, blank=True)
 
-    def __str__(self):
-        return self.status
+    def __int__(self):
+        return self.status.id
 
 
 
@@ -49,13 +50,13 @@ class Applicant(models.Model):
     email = models.EmailField(max_length=100, null=True, blank=True, unique=True)
     phone = models.CharField(max_length=100, null=True, blank=True, unique=True)
     age = models.IntegerField(null=True, blank=True)
-    cv = models.FileField(upload_to='cv/', null=True, blank=True)
+    cv = models.FileField(upload_to='cv/', null=True, blank=True)         
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    status = models.ForeignKey(Status, on_delete=models.CASCADE,default=1)
+    status = models.ForeignKey(Status, on_delete=models.CASCADE,default=1)        # O estado default de um aplicante é under_analysis
     is_deleted = models.BooleanField(default=False)
 
-    objects = models.Manager()  # Default manager
-    active_objects = ApplicantQuerySet.as_manager()  # Manager for active (non-deleted) applicants
+    objects = models.Manager()  
+    active_objects = ApplicantQuerySet.as_manager()  
 
     def __str__(self):
         return self.name

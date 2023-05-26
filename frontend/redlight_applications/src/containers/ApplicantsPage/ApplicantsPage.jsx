@@ -2,26 +2,34 @@ import "./ApplicantsPage.css";
 
 import React, { useState,useEffect } from "react";
 import axios from "axios";
-import {IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
-import {BsThreeDotsVertical} from "react-icons/bs";
+
 import { Popup,ApplicantInfo,ApplicantsList } from "../../components";
 import  {GrAdd} from "react-icons/gr";
 import {RiDeleteBin6Line} from "react-icons/ri";
 
+// Este container é a pagina principal da app onde os outros componentes são renderizados
 function ApplicationPage() {
+  //Estado que guarda os aplicantes
   const [applicants, setApplicants] = useState([]);
+  //Estado que guarda as roles
   const [roles, setRoles] = useState([]);
-  const [showApplicants, setShowApplicants] = useState({});
+  //estado para ver se o applicantPopup esta aberto ou nao
   const [applicantPopup, setApplicantPopup] = useState(false);
+  //Estado para guardar uma role para usar no applicantPopup
   const [roleID, setActiveRole] = useState(null);
+  //Estado para indicar que pagina é que tem que ser renderizada ( começa sempre na board page  ( true - board page, false - list page)) 
   const [selectedOption, setSelectedOption] = useState(true);
+  //Estado para guardar o nome do aplicante que esta a ser pesquisado
   const [searchName, setSearchName] = useState("");
+  //Estado para controlar se o popup da role esta aberto ou não
   const [rolePopup, setRolePopup] = useState(false);
+  //Estado para controlar se o popup da informação do aplicante esta aberto ou não
   const [infoPopup, setInfoPopup] = useState(false);
+  //Estado para guardar o aplicante selecionado e usar no applicantInfo
   const [selectedApplicant, setSelectedApplicant] = useState(null);
-  const [listPage, setListPage] = useState(1);
- 
 
+ 
+  //Em caso de pesquisa por nome o estado searchName é atualizado
   const searchEvent = (event) => {
     const value = event.target.value;
     
@@ -31,49 +39,43 @@ function ApplicationPage() {
     }
   };
 
+  //Funcao que abre o applicantPopup e guarda a roleID
   const createApplicant = (roleID) => {
     setActiveRole(roleID);
     setApplicantPopup(true);
   };
+  //Funcao que abre o rolePopup
   const createRole = () => {
     setRolePopup(true);
   };
-
+  //Funcao que abre o infoPopup e guarda o aplicante selecionado
   const openInfoPopup = (applicant) => {
     setInfoPopup(true);
     setSelectedApplicant(applicant);
   }
  
-
+  //Funcao para mudar de pagina
   const changePage = () => {
     setSelectedOption(!selectedOption);
     
   }
-
+  //O use effect vai buscar os aplicantes e as roles
     useEffect(() => {
       getRoles();
       getApplicants();
     }, []);
   
+    //Funcao para ir buscar os aplicantes
     const getApplicants = async () => {
       try {
         const response = await axios.get('http://localhost:8000/applicants/list/');
         setApplicants(response.data);
-    
-        const initialShowApplicants = response.data.reduce((acc, applicant) => {
-          const roleId = applicant.role.id;
-          if (!acc[roleId]) {
-            acc[roleId] = true;
-          }
-          return acc;
-        }, {});
-        setShowApplicants(initialShowApplicants);
 
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-  
+  //Funcao para ir buscar as roles
     const getRoles = async () => {
       try {
         const response = await axios.get('http://localhost:8000/applicants/list_roles/');
@@ -87,17 +89,19 @@ function ApplicationPage() {
     };
 
     
-  
+    //Funcao para arrastar o card de um aplicante
     const handleDragStart = (event, applicantId) => {
       event.dataTransfer.setData('text/plain', applicantId);
     };
-  
+    
+    //Funcao para largar o card de um aplicante e consequentemente atualizar a role do aplicante ( no caso de este ser arrastado para outra role)
     const handleDrop = (event, roleId) => {
       event.preventDefault();
       const applicantId = event.dataTransfer.getData('text/plain');
       moveApplicant(applicantId, roleId);
     };
-  
+
+    //Funcao que atualiza a role de um aplicante ( no caso de este ser arrastado para outra role)
     const moveApplicant = async (applicantId, roleId) => {
       try {
         const formData = new FormData();
@@ -105,7 +109,7 @@ function ApplicationPage() {
         await axios.post(`http://localhost:8000/applicants/edit/${applicantId}/`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
-        
+        //Atualizacao automatica da pagina
         getApplicants();
 
         } catch (error) {
@@ -113,22 +117,25 @@ function ApplicationPage() {
         }
     };
 
+    //Funcao para apagar um aplicante
     const deleteApplicant = async (applicantId) => {
       try {
         await axios.request({
          url: `http://localhost:8000/applicants/delete/${applicantId}/`, 
     
         });
+        //Atualizacao automatica da pagina
         getApplicants();
       } catch (error) {
         console.error(error);
       }
     }
-
+    //Funcao para apagar uma role
     const deleteRole = async (roleId) => {
       try {
         console.log("oi")
         await axios.delete(`http://localhost:8000/applicants/delete_role/${roleId}/`);
+        //Atualizacao automatica da pagina
         getRoles();
         getApplicants();
       } catch (error) {
@@ -136,6 +143,7 @@ function ApplicationPage() {
       }
     };
 
+    //Funcao para obter a cor do status de um aplicante  (verde-approved/vermelho-rejected/amarelo-under_analysis)
     const getStatusColor = (status) => {
       switch (status) {
         case 'rejected':
@@ -152,13 +160,12 @@ function ApplicationPage() {
     
     return (
       <div className="applicants_page">
-     
         <div className="applicants_info" >
           <div className="filter_bar">
+            {/**Navbar do site com barra de pesquisa/botao de criacao de novas roles e botao para mudar de pagina */}
             <div className="bar_content">
               <div className="bar_content_filters">
-            <span className="small_header">Search:</span>
-              
+                <span className="small_header">Search:</span>
                 <input
                   className="small_header"
                   type="text"
@@ -169,6 +176,7 @@ function ApplicationPage() {
                 />
             </div>
             <div className="bar_content_icons">
+              {/**Popup para criar uma nova role Quando é fechado atualiza automaticamente as roles da pagina*/}
             <Popup
                 trigger={rolePopup}
                 setTrigger={(value) => {
@@ -179,6 +187,7 @@ function ApplicationPage() {
                 }}
                 createType="role"
               />
+              {/**Botao para criar uma nova role e botao para mudar de pagina ( list ou board) */}
               <button className="small_header" onClick={() => createRole()}>Create new role</button>
               {selectedOption === true ? (
               <button className="small_header"onClick= {changePage}>list</button>
@@ -189,10 +198,10 @@ function ApplicationPage() {
           </div>
 
           </div>
-         
+         {/**Renderizacao da pagina correca de acordo com o useState selectedOption */}
          {selectedOption === true ? (
           <div className="board">
-            
+            {/**Renderizacao das boards para cada role */}
             {roles.map((role) => (
               <div
                 key={role.id}
@@ -206,15 +215,17 @@ function ApplicationPage() {
                   <h2 className="header">{role.title}</h2>
                   </div>
                   <div >
+                    {/**Cada board tem um botao para adicionar aplicantes ( a essa role ) e um botao de delete da role*/}
                   <GrAdd
                       className="icon"
                       onClick={() => createApplicant(role.id)}
                     />
-                  <RiDeleteBin6Line className="icon"onClick={() => deleteRole(role.id)}/>
+                  <RiDeleteBin6Line title="delete role" className="icon"onClick={() => deleteRole(role.id)}/>
                   
                 </div>
                 
                 </div>
+                {/**Popup para criar um aplicante*/}
                 <Popup
                   trigger={role.id === roleID ? applicantPopup : false}
                   setTrigger={(value) => {
@@ -226,9 +237,11 @@ function ApplicationPage() {
                   roleId={role.id}
                   createType="applicant"
                 />
-                {showApplicants[role.id] && (
+                {/**Renderizacao dos aplicantes de cada role em forma de cards  Cada card tem o nome e o estado do applicant ( com a devida cor) 
+                 * e um botao para apagar o aplicante */}
                   <div className="applicants">
                     {applicants.map((applicant) => {
+                      {/** Filtro para verificar se o aplicante condiz com o nome pesquisado */}
                       if (applicant.role.id === role.id && applicant.name.toLowerCase().includes(searchName.toLowerCase())) {
                         return (
                           <div
@@ -252,9 +265,10 @@ function ApplicationPage() {
                       return null;
                     })}
                   </div>
-                )}
+                
               </div>
             ))}
+          {/**Renderizacao da pagina com a lista de aplicantes */}            
           </div>
          ) : (
           <ApplicantsList
@@ -263,9 +277,11 @@ function ApplicationPage() {
             openInfoPopup={openInfoPopup}
             deleteApplicant={deleteApplicant}
             getStatusColor={getStatusColor}
+            createApplicant={createApplicant}
           />) 
           }
           </div>
+          {/**Renderizacao do Popup para mostrar a informacao de um aplicante */}
           <ApplicantInfo
           trigger={infoPopup}
           setTrigger={(value) => {
@@ -275,7 +291,8 @@ function ApplicationPage() {
             }  
           }}
           applicant={selectedApplicant}
-          roles={roles}     
+          roles={roles}  
+          getStatusColor={getStatusColor}   
         />
          
           </div>

@@ -1,0 +1,31 @@
+A app foi feita em react e django.
+
+#  Instruções do backend
+Primeiramente é preciso correr o comando {pip install -r requirements.txt} para instalar as dependencias do django
+Para depois correr o django é preciso fazer cd backend/website e depois correr as migracoes:
+{python manage.py makemigrations} seguido de {python manage.py migrate} 
+Depois de corridas as migracoes é preciso criar os estados iniciais (approved/rejected/under_analysis) - para fazer isto é preciso correr 
+{python manage.py loaddata initial_status}  Se tudo correr bem vai aparecer uma mensagem a dizer "3 fixtures created" no terminal
+
+Depois disto já se pode correr a app com o comando   {python manage.py runserver}
+
+Em caso de erro da base de dados ("Foreign key unique constraint"),
+é preciso apagar o ficheiro db.sqlite3 e correr novamente as migracoes e o ficheiro initial_status
+
+#  Instruções do frontend
+É preciso inicialmente fazer cd frontend/redligh_applications
+
+Depois é preciso instalar o react npm install e instalar os react-icons npm install react-icons 
+Depois de ter ambos instalados é so preciso correr npm start e a página vai abrir no localhost:3000
+
+
+#  Instruções de utilização
+Para comecar e preciso criar uma nova role ( botao "create new role") e depois criar aplicantes para essa role ( botao botao "+" na coluna da role)
+A app tem 2 paginas:
+Na primeira é possivel ver todas as roles existentes e é possivel trocar os aplicantes de role apenas ao arrastar de uma coluna para outra
+
+Na segunda pagina (botão list) é possivel ver todos os aplicantes a sua role e o seu estado.
+
+Ao clicar no card de um aplicante ( na pagina da board) ou no botão info ( na pagina da lista) é possivel ver mais informação sobre o aplicante 
+e é tambem possivel editar esta informação.
+

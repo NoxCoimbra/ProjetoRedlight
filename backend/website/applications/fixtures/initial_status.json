@@ -1,0 +1,6 @@
+[
+    {"model": "applications.status", "fields": {"status": "under_analysis"}},
+    {"model": "applications.status", "fields": {"status": "approved"}},
+    {"model": "applications.status", "fields": {"status": "rejected"}}
+  
+  ]

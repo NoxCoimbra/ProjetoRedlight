@@ -47,3 +47,7 @@
     padding: 4px;
     text-align: center;
 }
+
+.extra:hover, .icon:hover {
+    cursor: pointer;
+}
